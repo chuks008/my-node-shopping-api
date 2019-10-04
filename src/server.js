@@ -16,7 +16,6 @@ app.use('/', router);
 app.use('/operation', operationRoutes);
 app.use('/user', userRoutes);
 
-
 sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Chai testing is listening on port ${PORT}`);

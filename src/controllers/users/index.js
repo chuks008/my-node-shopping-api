@@ -7,9 +7,8 @@ module.exports = {
   updateUserById: (req, res) => {
     const newUsername = req.body.new_username;
     const userId = req.params.user_id;
-    User.update({ username: newUsername },
-      { where: { id: userId } })
-      .then((user) => {
+    User.update({ username: newUsername }, { where: { id: userId } })
+      .then(user => {
         if (!user) {
           throw new Error(error.NO_USERS_AVAILABLE);
         }
@@ -19,7 +18,7 @@ module.exports = {
           error: false,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(404).json(error.generateErrorMessage(err));
       });
   },
@@ -27,10 +26,8 @@ module.exports = {
   deleteUser: (req, res) => {
     const userId = req.params.user_id;
 
-    User.destroy(
-      { where: ({ id: userId }) },
-    )
-      .then((success) => {
+    User.destroy({ where: { id: userId } })
+      .then(success => {
         if (!success) {
           throw new Error(error.NO_USERS_AVAILABLE);
         }
@@ -40,21 +37,23 @@ module.exports = {
           error: false,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(404).json(error.generateErrorMessage(err));
       });
   },
 
   getUsers: (req, res) => {
     User.findAll()
-      .then((users) => {
+      .then(users => {
         if (!users) {
           throw new Error(error.NO_USERS_AVAILABLE);
         }
 
-        const userResults = users.map((user) => (
-          { id: user.id, username: user.username, email: user.email }
-        ));
+        const userResults = users.map(user => ({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        }));
 
         res.json({
           message: 'Success getting users',
@@ -62,7 +61,7 @@ module.exports = {
           users: userResults,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(404).json(error.generateErrorMessage(err));
       });
   },
@@ -70,7 +69,7 @@ module.exports = {
   getUserById: (req, res) => {
     const userId = req.params.user_id;
     User.findOne({ where: { id: userId } })
-      .then((user) => {
+      .then(user => {
         if (!user) {
           throw new Error(error.NO_USERS_AVAILABLE);
         }
@@ -86,7 +85,7 @@ module.exports = {
           data: currentUser,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(404).json(error.generateErrorMessage(err));
       });
   },
@@ -94,31 +93,32 @@ module.exports = {
     const { username, password } = req.body;
 
     User.findOne({
-      where: {username}
+      where: { username },
     })
-    .then((user) => {
-      if(!user) {
-        throw new Error(error.NO_USERS_AVAILABLE);
-      }
+      .then(user => {
+        if (!user) {
+          throw new Error(error.NO_USERS_AVAILABLE);
+        }
 
-      bcrypt.compare(password, user.password)
-        .then((equal) => {
-          if(!equal) {
-            throw new Error(error.INCORRECT_CREDENTIALS);
-          }
+        bcrypt
+          .compare(password, user.password)
+          .then(equal => {
+            if (!equal) {
+              throw new Error(error.INCORRECT_CREDENTIALS);
+            }
 
-          res.json({
-            "message": "User found login success",
-            "error": false
+            res.json({
+              message: 'User found login success',
+              error: false,
+            });
           })
-        })
-        .catch((err) => {
-          res.json(error.generateErrorMessage(err));
-        })
-    })
-    .catch((err) => {
-      res.json(error.generateErrorMessage(err));
-    });
+          .catch(err => {
+            res.json(error.generateErrorMessage(err));
+          });
+      })
+      .catch(err => {
+        res.json(error.generateErrorMessage(err));
+      });
   },
   registerUser: (req, res) => {
     const { username, email, password, address } = req.body;
@@ -128,8 +128,9 @@ module.exports = {
         [Op.or]: [{ username }, { email }],
       },
     })
-      .then((user) => {
-        if (user) { // the user already exists, so return an error
+      .then(user => {
+        if (user) {
+          // the user already exists, so return an error
           throw new Error(error.USER_ALREADY_TAKEN);
         }
 
@@ -139,7 +140,7 @@ module.exports = {
           password,
           address,
         })
-          .then((newUser) => {
+          .then(newUser => {
             if (!newUser) {
               throw new Error(error.GENERAL_SERVER_ERROR);
             }
@@ -151,12 +152,11 @@ module.exports = {
               address: newUser.address,
             });
           })
-          .catch((err) => {
-            console.log('Error creating new user', err.message);
+          .catch(err => {
             res.status(500).json(error.generateErrorMessage(err));
           });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(500).json(error.generateErrorMessage(err));
       });
   },

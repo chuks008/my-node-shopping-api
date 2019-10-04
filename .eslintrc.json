@@ -1,7 +1,8 @@
 {
   "env": {
     "node": true,
-    "es6": true
+    "es6": true,
+    "mocha": true
   },
   "extends": ["airbnb-base", "prettier"],
   "plugins":["prettier"],
@@ -13,7 +14,18 @@
     "ecmaVersion" : 2018,
     "sourceType": "script"
   },
-  "rules": {}
+  "rules": {
+    "no-console": 2,
+    "prettier/prettier": ["error"]
+  },
+  "overrides": [
+    {
+        "files": ["test/**/*.js"],
+        "rules": {
+            "no-unused-expressions": "off"
+        }
+    }
+  ]
 }
 
 // linting exercise: done

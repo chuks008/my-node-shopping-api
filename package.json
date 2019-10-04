@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": " nyc mocha test/**/*.js --reporter mochawesome; exit 0",
-    "lint": "eslint --fix --ignore-path .gitignore --max-warnings=0 .; exit 0"
+    "test": "mocha test/**/*.js --reporter mochawesome; exit 0",
+    "test-with-coverage": "nyc --reporter=text --check-coverage --lines 90 --per-file mocha test/**/*.js; exit 0",
+    "lint": "eslint --fix --ignore-path .gitignore .; exit 0"
   },
   "keywords": [],
   "author": "",
@@ -20,12 +21,12 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.1",
     "husky": "^3.0.8",
+    "lint-staged": "^9.4.1",
     "mocha": "^6.2.0",
     "mochawesome": "^4.1.0",
     "nyc": "^14.1.1",
-    "sinon": "^7.5.0",
-    "sinon-chai": "^3.3.0",
-    "sinon-express-mock": "^2.2.1"
+    "prettier": "^1.18.2",
+    "sinon": "^7.5.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
@@ -37,10 +38,5 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.19.0",
     "sequelize-cli": "^5.5.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm test"
-    }
   }
 }
