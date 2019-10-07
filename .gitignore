@@ -1,0 +1,8 @@
+node_modules
+.env
+package-lock.json
+.DS_Store
+src/config/config.json
+public/*
+mochawesome-report/
+.nyc_output
