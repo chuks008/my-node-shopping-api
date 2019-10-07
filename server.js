@@ -19,7 +19,7 @@ sequelize.sync().then(() => {
   app.use('/', testRoute);
 
   app.listen(PORT, () => {
-    console.log(`Chai testing is listening on port ${PORT}`);
+    console.log(`My Node Shopping API is listening on port ${PORT}`);
   });
 });
 

@@ -15,7 +15,7 @@
     "sourceType": "script"
   },
   "rules": {
-    "no-console": 2,
+    "no-console": "off",
     "prettier/prettier": ["error"]
   },
   "overrides": [
@@ -27,10 +27,3 @@
     }
   ]
 }
-
-// linting exercise: done
-// implement passport
-// implement login (using bcrypt)
-// use a local git repository: done
-// have code run with airbnb, enforce the style, prettier
-// use husky, on pre-commit run lint: done

@@ -1,5 +1,5 @@
 {
-  "name": "chai-testing",
+  "name": "my-node-shopping-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -40,5 +40,10 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.19.0",
     "sequelize-cli": "^5.5.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test && npm run lint"
+    }
   }
 }
