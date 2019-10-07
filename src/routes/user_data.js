@@ -2,7 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 const validation = require('../middleware/validation');
-const userController = require('../controllers/users');
+const userAccountService = require('../services/users/userAccountService')();
+const userController = require('../controllers/users')(
+  userAccountService,
+);
 const jwtAuth = require('../middleware/auth')('jwt');
 
 router.post(
