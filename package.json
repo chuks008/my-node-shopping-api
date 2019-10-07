@@ -42,6 +42,8 @@
     "sequelize-cli": "^5.5.1"
   },
   "husky": {
-    "pre-commit": "npm run test && npm run lint"
+    "hooks": {
+      "pre-commit": "npm run test && npm run lint"
+    }
   }
 }
