@@ -1,5 +1,5 @@
 const { assert } = require('chai');
-const fieldValidaton = require('../../src/util/validation/fieldValidation');
+const fieldValidaton = require('../../../src/util/validation/fieldValidation');
 
 describe('Field validation test suite', () => {
   describe('#isRequestEmpty', () => {

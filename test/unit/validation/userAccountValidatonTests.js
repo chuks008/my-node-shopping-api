@@ -1,5 +1,5 @@
 const sinon = require('sinon');
-const validation = require('../../src/middleware/validation');
+const validation = require('../../../src/middleware/validation');
 
 describe('Validation Test Suite', () => {
   let res;
