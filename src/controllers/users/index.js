@@ -1,12 +1,14 @@
 module.exports = userAccountService => {
   return {
-    updateUserById: (req, res) => {
+    updateUserById: async (req, res) => {
       const newUsername = req.body.new_username;
+      const oldUsername = req.body.old_username;
       const userId = req.params.user_id;
 
-      const updateResult = userAccountService.updateUserCredentialsById(
-        newUsername,
+      const updateResult = await userAccountService.updateUserCredentialsById(
         userId,
+        oldUsername,
+        newUsername,
       );
 
       if (updateResult.error === true) {
@@ -16,10 +18,12 @@ module.exports = userAccountService => {
       }
     },
 
-    deleteUser: (req, res) => {
+    deleteUser: async (req, res) => {
       const userId = req.params.user_id;
 
-      const deleteResult = userAccountService.deleteUserById(userId);
+      const deleteResult = await userAccountService.deleteUserById(
+        userId,
+      );
 
       if (deleteResult.error === true) {
         res.status(404).json(deleteResult);
@@ -28,8 +32,8 @@ module.exports = userAccountService => {
       }
     },
 
-    getUsers: (req, res) => {
-      const userResults = userAccountService.getUsers();
+    getUsers: async (req, res) => {
+      const userResults = await userAccountService.getUsers();
 
       if (userResults.error === true) {
         res.status(404).json(userResults);
@@ -38,13 +42,12 @@ module.exports = userAccountService => {
       }
     },
 
-    getUserById: (req, res) => {
+    getUserById: async (req, res) => {
       const userId = req.params.user_id;
 
-      console.log('Getting user by id: ', userId);
-
-      const userResult = userAccountService.findUserById(userId);
-      console.log(userResult);
+      const userResult = await userAccountService.findUserById(
+        userId,
+      );
 
       if (userResult.error === true) {
         res.status(404).json(userResult);
@@ -53,10 +56,10 @@ module.exports = userAccountService => {
       }
     },
 
-    loginUser: (req, res) => {
+    loginUser: async (req, res) => {
       const { username, password } = req.body;
 
-      const loginResult = userAccountService.loginUser(
+      const loginResult = await userAccountService.loginUser(
         username,
         password,
       );
@@ -67,10 +70,10 @@ module.exports = userAccountService => {
         res.status(200).json(loginResult);
       }
     },
-    registerUser: (req, res) => {
+    registerUser: async (req, res) => {
       const { username, email, password, address } = req.body;
 
-      const registerResult = userAccountService.registerUser(
+      const registerResult = await userAccountService.registerUser(
         username,
         email,
         password,
