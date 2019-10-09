@@ -1,3 +1,5 @@
+const error = require('../../error');
+
 module.exports = userAccountService => {
   return {
     updateUserById: async (req, res) => {
@@ -65,7 +67,9 @@ module.exports = userAccountService => {
       );
 
       if (loginResult.error === true) {
-        res.status(404).json(loginResult);
+        res
+          .status(error.getErrorCode(loginResult.message))
+          .json(loginResult);
       } else {
         res.status(200).json(loginResult);
       }
@@ -81,7 +85,9 @@ module.exports = userAccountService => {
       );
 
       if (registerResult.error === true) {
-        res.status(404).json(registerResult);
+        res
+          .status(error.getErrorCode(registerResult.message))
+          .json(registerResult);
       } else {
         res.status(200).json(registerResult);
       }

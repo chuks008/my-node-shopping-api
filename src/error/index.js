@@ -9,4 +9,18 @@ module.exports = {
     message: err.message,
     error: true,
   }),
+  getErrorCode(errorMessage) {
+    switch (errorMessage) {
+      case this.USER_ALREADY_TAKEN:
+        return 409;
+      case this.GENERAL_SERVER_ERROR:
+        return 503;
+      case this.INCORRECT_CREDENTIALS:
+        return 403;
+      case this.NO_USERS_AVAILABLE:
+        return 404;
+      default:
+        return 500;
+    }
+  },
 };

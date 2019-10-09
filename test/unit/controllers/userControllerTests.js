@@ -1,24 +1,27 @@
 const sinon = require('sinon');
-const assert = require('assert');
 const userService = require('../../../src/services/users/userAccountService')();
+const error = require('../../../src/error');
 const sut = require('../../../src/controllers/users')(userService);
 
-describe('User Controller tests', () => {
-  let res;
-  let status;
-  let json;
-  const req = {};
-
-  beforeEach(() => {
-    status = sinon.stub();
-    json = sinon.spy();
-    res = { json, status };
-    status.returns(res);
-    req.body = {};
-  });
-
+describe('User Controller tests suite', () => {
   describe('registration method tests', () => {
-    it('should call user service registration with correct parameters', () => {
+    let res;
+    let status;
+    let json;
+    const req = {};
+
+    beforeEach(() => {
+      status = sinon.stub();
+      json = sinon.spy();
+      res = { json, status };
+      status.returns(res);
+    });
+
+    afterEach(() => {
+      userService.registerUser.restore();
+    });
+
+    it('should call user service registerUser with correct parameters', async () => {
       const username = 'username007';
       const email = 'username007@gmail.com';
       const password = 'password';
@@ -31,9 +34,9 @@ describe('User Controller tests', () => {
         address,
       };
 
-      sinon.stub(userService, 'registerUser').resolves('ok');
+      sinon.stub(userService, 'registerUser').resolves('');
 
-      sut.registerUser(req, res);
+      await sut.registerUser(req, res);
 
       sinon.assert.calledWith(
         userService.registerUser,
@@ -42,6 +45,129 @@ describe('User Controller tests', () => {
         password,
         address,
       );
+    });
+
+    it('should send error json response for existing user with http error 409', async () => {
+      const errorResponse = {
+        message: error.USER_ALREADY_TAKEN,
+        error: true,
+      };
+
+      sinon.stub(userService, 'registerUser').resolves(errorResponse);
+
+      await sut.registerUser(req, res);
+
+      sinon.assert.calledWith(res.json, errorResponse);
+      sinon.assert.calledWith(res.status, 409);
+    });
+
+    it('should send error json response for general server error with http error 503', async () => {
+      const errorResponse = {
+        message: error.GENERAL_SERVER_ERROR,
+        error: true,
+      };
+
+      sinon.stub(userService, 'registerUser').resolves(errorResponse);
+      await sut.registerUser(req, res);
+
+      sinon.assert.calledWith(res.json, errorResponse);
+      sinon.assert.calledWith(res.status, 503);
+    });
+
+    it('should send success json response when user created successfully with http code 200', async () => {
+      const successResponse = {
+        message: '',
+        data: {},
+        error: false,
+      };
+
+      sinon
+        .stub(userService, 'registerUser')
+        .resolves(successResponse);
+
+      await sut.registerUser(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+    });
+  });
+
+  // loginn tests
+  describe('login method tests', () => {
+    let res;
+    let status;
+    let json;
+    const req = {};
+
+    beforeEach(() => {
+      status = sinon.stub();
+      json = sinon.spy();
+      res = { json, status };
+      status.returns(res);
+    });
+
+    afterEach(() => {
+      userService.loginUser.restore();
+    });
+
+    it('should call user service loginUser with correct parameters', async () => {
+      const username = 'username007';
+      const password = 'password';
+
+      req.body = {
+        username,
+        password,
+      };
+
+      sinon.stub(userService, 'loginUser').resolves('');
+
+      await sut.loginUser(req, res);
+
+      sinon.assert.calledWith(
+        userService.loginUser,
+        username,
+        password,
+      );
+    });
+
+    it('should send error json response for non-existing user with http error 404', async () => {
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon.stub(userService, 'loginUser').resolves(errorResponse);
+
+      await sut.loginUser(req, res);
+
+      sinon.assert.calledWith(res.json, errorResponse);
+      sinon.assert.calledWith(res.status, 404);
+    });
+
+    it('should send error json response for incorrect credentials with http error 403', async () => {
+      const errorResponse = {
+        message: error.INCORRECT_CREDENTIALS,
+        error: true,
+      };
+
+      sinon.stub(userService, 'loginUser').resolves(errorResponse);
+      await sut.loginUser(req, res);
+
+      sinon.assert.calledWith(res.json, errorResponse);
+      sinon.assert.calledWith(res.status, 403);
+    });
+
+    it('should send success json response when user logged in successfully with http code 200', async () => {
+      const successResponse = {
+        message: '',
+        data: {},
+        error: false,
+      };
+
+      sinon.stub(userService, 'loginUser').resolves(successResponse);
+
+      await sut.loginUser(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
     });
   });
 });
