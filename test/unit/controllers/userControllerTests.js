@@ -19,11 +19,10 @@ describe('User Controller tests', () => {
 
   describe('registration method tests', () => {
     it('should call user service registration with correct parameters', () => {
-
-        const username ='username007';
-        const email = 'username007@gmail.com';
-        const password = 'password';
-        const address = '123 Aukey Address';
+      const username = 'username007';
+      const email = 'username007@gmail.com';
+      const password = 'password';
+      const address = '123 Aukey Address';
 
       req.body = {
         username,
