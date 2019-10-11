@@ -5,17 +5,22 @@ const userService = require('../../../src/services/users/userAccountService')();
 const error = require('../../../src/error');
 const sut = require('../../../src/controllers/users')(userService);
 
-describe('User Controller tests suite', () => {
-  let res;
-  let status;
-  let json;
-  const req = {};
+let res;
+let status;
+let json;
+let redirect;
+const req = {};
 
+describe('User Controller tests suite', () => {
   beforeEach(() => {
     status = sinon.stub();
     json = sinon.spy();
-    res = { json, status };
+    redirect = sinon.stub();
+    res = { json, status, redirect };
     status.returns(res);
+    redirect.returns(res);
+    req.body = {};
+    req.params = {};
   });
 
   describe('registration method tests', () => {
@@ -76,7 +81,7 @@ describe('User Controller tests suite', () => {
       sinon.assert.calledWith(res.status, 503);
     });
 
-    it('should send success json response when user created successfully with http code 200', async () => {
+    it('should send redirect to login when user created successfully with http code 307', async () => {
       const successResponse = {
         message: '',
         data: {},
@@ -89,7 +94,7 @@ describe('User Controller tests suite', () => {
 
       await sut.registerUser(req, res);
 
-      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.redirect, 307, '/user/login');
     });
   });
 
@@ -161,7 +166,7 @@ describe('User Controller tests suite', () => {
     });
   });
 
-  describe('update user method tests', () => {
+  describe('update user method tests', async () => {
     afterEach(() => {
       userService.updateUserCredentialsById.restore();
     });
@@ -172,11 +177,50 @@ describe('User Controller tests suite', () => {
         error: true,
       };
 
+      req.params.user_id = 1;
+
       sinon
         .stub(userService, 'updateUserCredentialsById')
         .resolves(errorResponse);
 
       await sut.updateUserById(req, res);
+
+      // Sinon assertion style
+      sinon.assert.calledWith(res.json, errorResponse);
+      sinon.assert.calledWith(res.status, 404);
     });
+
+    it('should send json success response on succesful user update with http code 200', async () => {
+      const newUsername = 'mySkynet105';
+      req.body = {
+        oldUsername: 'skynet102',
+        newUsername,
+      };
+
+      const successResponse = {
+        message: `Success updating credentials to ${newUsername}`,
+        error: false,
+      };
+
+      req.params.user_id = 5;
+
+      sinon
+        .stub(userService, 'updateUserCredentialsById')
+        .resolves(successResponse);
+
+      await sut.updateUserById(req, res);
+
+      sinon.assert.calledWith(res.json, successResponse);
+      sinon.assert.calledWith(res.status, 200);
+    });
+  });
+
+  describe('delete user tests', () => {
+    // after(() => {
+    //   userService.deleteUserById.restore();
+    // });
+    // it('should send json error response when user service fails to delete user with http error 500', () => {
+    //   req.params.user_id = 1;
+    // });
   });
 });
