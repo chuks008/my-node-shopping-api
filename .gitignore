@@ -6,3 +6,4 @@ src/config/config.json
 public/*
 mochawesome-report/
 .nyc_output
+logs/
