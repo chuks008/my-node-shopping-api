@@ -45,21 +45,28 @@ module.exports = () => {
       }
     },
 
-    deleteUserById: userId => {
-      User.destroy({ where: { id: userId } })
-        .then(success => {
-          if (!success) {
-            throw new Error(error.NO_USERS_AVAILABLE);
-          }
-
-          return {
-            message: `Success deleting user with id ${userId}`,
-            error: false,
-          };
-        })
-        .catch(err => {
-          return error.generateErrorMessage(err);
+    deleteUserById: async userId => {
+      try {
+        const isUserDeleted = await User.destroy({
+          where: { id: userId },
         });
+
+        if (!isUserDeleted) {
+          console.log(
+            'Unable to destroy user with ID, not found',
+            userId,
+          );
+          throw new Error(error.NO_USERS_AVAILABLE);
+        }
+
+        console.log('Success destroying user', userId);
+        return {
+          message: `Success deleting user with id ${userId}`,
+          error: false,
+        };
+      } catch (err) {
+        return error.generateErrorMessage(err);
+      }
     },
 
     getUsers: async () => {
@@ -168,10 +175,7 @@ module.exports = () => {
         return {
           message: 'User created successfully',
           data: {
-            user_id: newUser.id,
             username: newUser.username,
-            email: newUser.email,
-            token: createLoginToken(newUser),
           },
           error: false,
         };
