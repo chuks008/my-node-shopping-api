@@ -74,6 +74,7 @@ module.exports = userAccountService => {
         res.status(200).json(loginResult);
       }
     },
+
     registerUser: async (req, res) => {
       const { username, email, password, address } = req.body;
 
@@ -89,7 +90,7 @@ module.exports = userAccountService => {
           .status(error.getErrorCode(registerResult.message))
           .json(registerResult);
       } else {
-        res.status(200).json(registerResult);
+        res.redirect(307, '/user/login');
       }
     },
   };
