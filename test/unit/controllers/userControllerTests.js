@@ -1,22 +1,24 @@
 const sinon = require('sinon');
+const { expect } = require('chai');
+const assert = require('assert');
 const userService = require('../../../src/services/users/userAccountService')();
 const error = require('../../../src/error');
 const sut = require('../../../src/controllers/users')(userService);
 
 describe('User Controller tests suite', () => {
+  let res;
+  let status;
+  let json;
+  const req = {};
+
+  beforeEach(() => {
+    status = sinon.stub();
+    json = sinon.spy();
+    res = { json, status };
+    status.returns(res);
+  });
+
   describe('registration method tests', () => {
-    let res;
-    let status;
-    let json;
-    const req = {};
-
-    beforeEach(() => {
-      status = sinon.stub();
-      json = sinon.spy();
-      res = { json, status };
-      status.returns(res);
-    });
-
     afterEach(() => {
       userService.registerUser.restore();
     });
@@ -93,18 +95,6 @@ describe('User Controller tests suite', () => {
 
   // loginn tests
   describe('login method tests', () => {
-    let res;
-    let status;
-    let json;
-    const req = {};
-
-    beforeEach(() => {
-      status = sinon.stub();
-      json = sinon.spy();
-      res = { json, status };
-      status.returns(res);
-    });
-
     afterEach(() => {
       userService.loginUser.restore();
     });
@@ -168,6 +158,25 @@ describe('User Controller tests suite', () => {
       await sut.loginUser(req, res);
 
       sinon.assert.calledWith(res.status, 200);
+    });
+  });
+
+  describe('update user method tests', () => {
+    afterEach(() => {
+      userService.updateUserCredentialsById.restore();
+    });
+
+    it("should send error json response when user doesn't exist with http code 404", async () => {
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon
+        .stub(userService, 'updateUserCredentialsById')
+        .resolves(errorResponse);
+
+      await sut.updateUserById(req, res);
     });
   });
 });
