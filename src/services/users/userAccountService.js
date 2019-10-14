@@ -120,7 +120,7 @@ module.exports = (User, bcrypt) => {
         });
 
         if (!currentUser) {
-          throw new Error(error.NO_USERS_AVAILABLE);
+          throw new Error(error.INCORRECT_CREDENTIALS);
         }
 
         const passwordMatch = await bcrypt.compare(
@@ -133,7 +133,7 @@ module.exports = (User, bcrypt) => {
         }
 
         return {
-          message: 'User found login success',
+          message: 'User successfully logged in',
           data: {
             user_id: currentUser.id,
             username: currentUser.username,
