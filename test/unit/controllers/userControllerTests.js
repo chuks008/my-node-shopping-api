@@ -1,6 +1,4 @@
 const sinon = require('sinon');
-const { expect } = require('chai');
-const assert = require('assert');
 const userService = require('../../../src/services/users/userAccountService')();
 const error = require('../../../src/error');
 const sut = require('../../../src/controllers/users')(userService);
