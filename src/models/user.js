@@ -34,9 +34,6 @@ const user = (sequelize, DataTypes) => {
       address: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
       },
     },
     {

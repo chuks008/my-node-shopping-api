@@ -1,8 +1,13 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 const validation = require('../middleware/validation');
-const userAccountService = require('../services/users/userAccountService')();
+const { User } = require('../models').models;
+const userAccountService = require('../services/users/userAccountService')(
+  User,
+  bcrypt,
+);
 const userController = require('../controllers/users')(
   userAccountService,
 );

@@ -1,11 +1,9 @@
 const { Op } = require('sequelize');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
-const { User } = require('../../models').models;
 const error = require('../../error');
 
-module.exports = () => {
+module.exports = (User, bcrypt) => {
   /* Define method to create user token */
   function createLoginToken(user) {
     const userData = {
@@ -47,11 +45,11 @@ module.exports = () => {
 
     deleteUserById: async userId => {
       try {
-        const isUserDeleted = await User.destroy({
+        const deletedUser = await User.destroy({
           where: { id: userId },
         });
 
-        if (!isUserDeleted) {
+        if (!deletedUser) {
           console.log(
             'Unable to destroy user with ID, not found',
             userId,
@@ -59,7 +57,7 @@ module.exports = () => {
           throw new Error(error.NO_USERS_AVAILABLE);
         }
 
-        console.log('Success destroying user', userId);
+        console.log('Success destroying user', deletedUser.id);
         return {
           message: `Success deleting user with id ${userId}`,
           error: false,
@@ -122,7 +120,7 @@ module.exports = () => {
         });
 
         if (!currentUser) {
-          throw new Error(error.NO_USERS_AVAILABLE);
+          throw new Error(error.INCORRECT_CREDENTIALS);
         }
 
         const passwordMatch = await bcrypt.compare(
@@ -135,7 +133,7 @@ module.exports = () => {
         }
 
         return {
-          message: 'User found login success',
+          message: 'User successfully logged in',
           data: {
             user_id: currentUser.id,
             username: currentUser.username,
