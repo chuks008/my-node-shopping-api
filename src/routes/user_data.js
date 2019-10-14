@@ -2,7 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 const validation = require('../middleware/validation');
-const userAccountService = require('../services/users/userAccountService')();
+const { User } = require('../models').models;
+const userAccountService = require('../services/users/userAccountService')(
+  User,
+);
 const userController = require('../controllers/users')(
   userAccountService,
 );

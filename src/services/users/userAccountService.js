@@ -2,10 +2,9 @@ const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
-const { User } = require('../../models').models;
 const error = require('../../error');
 
-module.exports = () => {
+module.exports = User => {
   /* Define method to create user token */
   function createLoginToken(user) {
     const userData = {
