@@ -216,11 +216,45 @@ describe('User Controller tests suite', () => {
   });
 
   describe('delete user tests', () => {
-    // after(() => {
-    //   userService.deleteUserById.restore();
-    // });
-    // it('should send json error response when user service fails to delete user with http error 500', () => {
-    //   req.params.user_id = 1;
-    // });
+    afterEach(() => {
+      userService.deleteUserById.restore();
+    });
+
+    it('should send json error response when user service fails to delete user with http error 404', async () => {
+      req.params.user_id = 1;
+
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon
+        .stub(userService, 'deleteUserById')
+        .resolves(errorResponse);
+
+      await sut.deleteUser(req, res);
+
+      sinon.assert.calledWith(res.status, 404);
+      sinon.assert.calledWith(res.json, errorResponse);
+    });
+
+    it('should send json success response when user service deletes user with http error 200', async () => {
+      const userId = 9;
+      req.params.user_id = userId;
+
+      const successResponse = {
+        message: `Success deleting user with id ${userId}`,
+        error: false,
+      };
+
+      sinon
+        .stub(userService, 'deleteUserById')
+        .resolves(successResponse);
+
+      await sut.deleteUser(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, successResponse);
+    });
   });
 });
