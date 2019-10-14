@@ -7,3 +7,4 @@ public/*
 mochawesome-report/
 .nyc_output
 logs/
+.vscode

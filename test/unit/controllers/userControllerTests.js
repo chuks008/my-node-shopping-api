@@ -1,6 +1,4 @@
 const sinon = require('sinon');
-const { expect } = require('chai');
-const assert = require('assert');
 const userService = require('../../../src/services/users/userAccountService')();
 const error = require('../../../src/error');
 const sut = require('../../../src/controllers/users')(userService);
@@ -216,11 +214,145 @@ describe('User Controller tests suite', () => {
   });
 
   describe('delete user tests', () => {
-    // after(() => {
-    //   userService.deleteUserById.restore();
-    // });
-    // it('should send json error response when user service fails to delete user with http error 500', () => {
-    //   req.params.user_id = 1;
-    // });
+    afterEach(() => {
+      userService.deleteUserById.restore();
+    });
+
+    it('should send json error response when user service fails to delete user with http error 404', async () => {
+      req.params.user_id = 1;
+
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon
+        .stub(userService, 'deleteUserById')
+        .resolves(errorResponse);
+
+      await sut.deleteUser(req, res);
+
+      sinon.assert.calledWith(res.status, 404);
+      sinon.assert.calledWith(res.json, errorResponse);
+    });
+
+    it('should send json success response when user service deletes user with http error 200', async () => {
+      const userId = 9;
+      req.params.user_id = userId;
+
+      const successResponse = {
+        message: `Success deleting user with id ${userId}`,
+        error: false,
+      };
+
+      sinon
+        .stub(userService, 'deleteUserById')
+        .resolves(successResponse);
+
+      await sut.deleteUser(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, successResponse);
+    });
+  });
+
+  describe('Get all users tests', () => {
+    afterEach(() => {
+      userService.getUsers.restore();
+    });
+
+    it('should return a json response error when no users exist with http error 404', async () => {
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon.stub(userService, 'getUsers').resolves(errorResponse);
+      await sut.getUsers(req, res);
+
+      sinon.assert.calledWith(res.status, 404);
+      sinon.assert.calledWith(res.json, errorResponse);
+    });
+
+    it('should return a json success response when users are returned with http code 200', async () => {
+      const users = [
+        {
+          id: 1,
+          username: 'username002',
+          email: 'username002@mail.com',
+        },
+        {
+          id: 12,
+          username: 'username012',
+          email: 'username012@mail.com',
+        },
+      ];
+      const userResults = {
+        message: 'Success getting users',
+        users,
+        error: false,
+      };
+
+      const successResponse = {
+        message: 'Success getting users',
+        count: 2,
+        users,
+        error: false,
+      };
+
+      sinon.stub(userService, 'getUsers').resolves(userResults);
+      await sut.getUsers(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, successResponse);
+    });
+  });
+
+  describe('Get user by id tests', () => {
+    afterEach(() => {
+      userService.findUserById.restore();
+    });
+
+    it('should return a json response error when no user found by id with http error 404', async () => {
+      const errorResponse = {
+        message: error.NO_USERS_AVAILABLE,
+        error: true,
+      };
+
+      sinon.stub(userService, 'findUserById').resolves(errorResponse);
+      await sut.getUserById(req, res);
+
+      sinon.assert.calledWith(res.status, 404);
+      sinon.assert.calledWith(res.json, errorResponse);
+    });
+
+    it('should return a json success response when user found by id with http error 200', async () => {
+      const userId = 19;
+      req.params.user_id = userId;
+
+      const currentUserFound = {
+        id: 19,
+        username: 'username002',
+        email: 'username002@mail.com',
+      };
+
+      const userResult = {
+        user: currentUserFound,
+        error: false,
+      };
+
+      const successResponse = {
+        message: `Found one user with id ${currentUserFound.id}`,
+        data: currentUserFound,
+        error: false,
+      };
+
+      sinon.stub(userService, 'findUserById').resolves(userResult);
+
+      await sut.getUserById(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, successResponse);
+    });
   });
 });

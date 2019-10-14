@@ -40,21 +40,34 @@ module.exports = userAccountService => {
       if (userResults.error === true) {
         res.status(404).json(userResults);
       } else {
-        res.status(200).json(userResults);
+        const response = {
+          message: 'Success getting users',
+          count: userResults.users.length,
+          users: userResults.users,
+          error: false,
+        };
+        res.status(200).json(response);
       }
     },
 
     getUserById: async (req, res) => {
       const userId = req.params.user_id;
-
       const userResult = await userAccountService.findUserById(
         userId,
       );
 
       if (userResult.error === true) {
-        res.status(404).json(userResult);
+        res
+          .status(error.getErrorCode(userResult.message))
+          .json(userResult);
       } else {
-        res.status(200).json(userResult);
+        const successResponse = {
+          message: `Found one user with id ${userId}`,
+          data: userResult.user,
+          error: false,
+        };
+
+        res.status(200).json(successResponse);
       }
     },
 

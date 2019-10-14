@@ -85,7 +85,6 @@ module.exports = () => {
 
         return {
           message: 'Success getting users',
-          count: userResults.length,
           users: userResults,
           error: false,
         };
@@ -108,8 +107,7 @@ module.exports = () => {
         };
 
         return {
-          message: `Found one user with id ${userId}`,
-          data: currentUser,
+          user: currentUser,
           error: false,
         };
       } catch (err) {
