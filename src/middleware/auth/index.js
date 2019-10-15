@@ -5,7 +5,7 @@ module.exports = strategy => {
     passport.authenticate(
       strategy,
       { session: false },
-      (err, user, info) => {
+      (err, user) => {
         if (err) {
           return res.status(500).json({
             message: err.message,
@@ -22,7 +22,7 @@ module.exports = strategy => {
         }
 
         req.user = user;
-        next();
+        return next();
       },
     )(req, res, next);
   };

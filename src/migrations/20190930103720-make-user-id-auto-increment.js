@@ -1,7 +1,5 @@
-'use strict';
-
 module.exports = {
-  up: (queryInterface, Sequelize) =>
+  up: queryInterface =>
     queryInterface.sequelize.query(
       'ALTER TABLE users DROP CONSTRAINT users_pkey, ALTER id DROP NOT NULL, ADD PRIMARY KEY (id)',
     ),

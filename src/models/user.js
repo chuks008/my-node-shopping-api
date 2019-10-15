@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
+const error = require('../error');
 
-const user = (sequelize, DataTypes) => {
+const userModel = (sequelize, DataTypes) => {
   const User = sequelize.define(
     'user',
     {
@@ -39,15 +40,20 @@ const user = (sequelize, DataTypes) => {
     {
       hooks: {
         // define hooks to perform hashing on the password
-        beforeCreate(user, options) {
-          return bcrypt
-            .hash(user.password, 10)
-            .then(hash => {
-              user.password = hash;
-            })
-            .catch(err => {
-              throw new Error(error.GENERAL_SERVER_ERROR);
-            });
+        // eslint-disable-next-line no-unused-vars
+        beforeCreate(user, _options) {
+          return (
+            bcrypt
+              .hash(user.password, 10)
+              .then(hash => {
+                // eslint-disable-next-line no-param-reassign
+                user.password = hash;
+              })
+              // eslint-disable-next-line no-unused-vars
+              .catch(_err => {
+                throw new Error(error.GENERAL_SERVER_ERROR);
+              })
+          );
         },
       },
     },
@@ -56,4 +62,4 @@ const user = (sequelize, DataTypes) => {
   return User;
 };
 
-module.exports = user;
+module.exports = userModel;
