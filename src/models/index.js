@@ -14,6 +14,8 @@ const sequelize = new Sequelize.Sequelize(
 
 const models = {
   User: sequelize.import('./user'),
+  Product: sequelize.import('./product'),
+  ProductCategory: sequelize.import('./product_category'),
 };
 
 module.exports = { sequelize, models };
