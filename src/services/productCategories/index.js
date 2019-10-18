@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
-const { ProductCategory } = require('../../models').models;
+// const { ProductCategory } = require('../../models').models;
 
 /**
  * Product Category service
  * @module category/service
  */
-module.exports = ProductCategorys => {
+module.exports = ProductCategory => {
   return {
     /**
      * Update a product category with a new category name
