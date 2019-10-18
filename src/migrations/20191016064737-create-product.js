@@ -9,11 +9,13 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
+        // allowNull: false
       },
       categoryId: {
         type: Sequelize.INTEGER,
+        // allowNull: false
         references: {
-          model: 'Product_Categories',
+          model: 'Product_Categories', // should be ProductCategories
           key: 'id',
         },
       },
