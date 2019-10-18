@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
-// const { ProductCategory } = require('../../models').models;
+const { ProductCategory } = require('../../models').models;
 
 /**
  * Product Category service
  * @module category/service
  */
-module.exports = ProductCategory => {
+module.exports = ProductCategorys => {
   return {
     /**
      * Update a product category with a new category name
@@ -80,17 +80,88 @@ module.exports = ProductCategory => {
      * @param {number} id - id of the category to delete
      * @param {string} categoryName - name of the category to delete
      */
-    deleteCategory: (id, categoryName) => {},
+    deleteCategory: async (id, categoryName) => {
+      try {
+        const deleteSuccess = await ProductCategory.destroy({
+          where: { id, categoryName },
+        });
+
+        if (deleteSuccess === 1) {
+          return {
+            message: `Successfully deleted ${categoryName} category`,
+            error: false,
+          };
+        }
+
+        throw new Error(
+          'Something went wrong while deleting this category',
+        );
+      } catch (err) {
+        return {
+          message: err.message,
+          error: true,
+        };
+      }
+    },
     /**
      * Get a single product category by its id
      *
      * @param {number} id - the id of the product category to acquire
      */
-    getCategoryById: id => {},
+    getCategoryById: async id => {
+      try {
+        const categoryResult = await ProductCategory.findOne({
+          where: { id },
+        });
+
+        if (!categoryResult) {
+          throw new Error(`No category with id ${id} was found`);
+        }
+
+        return {
+          category: {
+            id: categoryResult.id,
+            category_name: categoryResult.categoryName,
+          },
+          error: false,
+        };
+      } catch (err) {
+        return {
+          message: err.message,
+          error: true,
+        };
+      }
+    },
     /**
      * Get all product categories
      *
      */
-    getAllCategories: () => {},
+    getAllCategories: async () => {
+      try {
+        const categories = await ProductCategory.findAll();
+
+        if (!categories) {
+          throw new Error('No categories found');
+        }
+
+        const categoryResult = categories.map(category => {
+          return {
+            id: category.id,
+            category_name: category.categoryName,
+          };
+        });
+
+        return {
+          count: categoryResult.length,
+          categories: categoryResult,
+          error: false,
+        };
+      } catch (err) {
+        return {
+          message: err.message,
+          error: true,
+        };
+      }
+    },
   };
 };

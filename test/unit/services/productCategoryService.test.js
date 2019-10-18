@@ -82,4 +82,115 @@ describe('Product Category tests', () => {
       assert.equal(updateResponse.message, successMsg);
     });
   });
+
+  describe('Get All categories tests', () => {
+    afterEach(() => {
+      ProductCategory.findAll.restore();
+    });
+
+    it('should return an error response when there are no categories found', async () => {
+      const errorMsg = 'No categories found';
+      sinon.stub(ProductCategory, 'findAll').resolves(null);
+      const categoryResult = await sut.getAllCategories();
+
+      expect(categoryResult.error).to.be.true;
+      assert.equal(categoryResult.message, errorMsg);
+    });
+
+    it('should return a success response when categories are found', async () => {
+      const categoriesResponse = [
+        {
+          id: 1,
+          name: 'toys',
+        },
+        {
+          id: 2,
+          name: 'food',
+        },
+      ];
+
+      sinon
+        .stub(ProductCategory, 'findAll')
+        .resolves(categoriesResponse);
+
+      const categoryResult = await sut.getAllCategories();
+
+      expect(categoryResult).contains.keys('categories', 'count');
+      expect(categoryResult.error).to.be.false;
+      expect(categoryResult.count).to.equal(2);
+      expect(categoryResult.categories[0]).contains.keys(
+        'category_name',
+      );
+    });
+  });
+
+  describe('Get category by ID tests', () => {
+    afterEach(() => {
+      ProductCategory.findOne.restore();
+    });
+
+    const categoryId = 45;
+
+    it('should return an error response when there is no category found', async () => {
+      const errorMsg = `No category with id ${categoryId} was found`;
+
+      sinon.stub(ProductCategory, 'findOne').resolves(null);
+      const categoryResult = await sut.getCategoryById(categoryId);
+
+      expect(categoryResult.error).to.be.true;
+      assert.equal(categoryResult.message, errorMsg);
+    });
+
+    it('should return a success response when a category is found', async () => {
+      const categoryResponse = {
+        id: 45,
+        name: 'food',
+      };
+
+      sinon
+        .stub(ProductCategory, 'findOne')
+        .resolves(categoryResponse);
+
+      const categoryResult = await sut.getCategoryById(categoryId);
+
+      expect(categoryResult).contains.keys('category');
+      expect(categoryResult.error).to.be.false;
+      expect(categoryResult.category).has.keys('category_name', 'id');
+    });
+  });
+
+  describe('Delete category tests', () => {
+    afterEach(() => {
+      ProductCategory.destroy.restore();
+    });
+
+    const categoryId = 45;
+    const categoryName = 'food';
+
+    it('should return an error response when a category was not deleted succesfully', async () => {
+      const failureMessage = `Something went wrong while deleting this category`;
+      sinon.stub(ProductCategory, 'destroy').resolves(0);
+
+      const deleteResponse = await sut.deleteCategory(
+        categoryId,
+        categoryName,
+      );
+
+      expect(deleteResponse.error).to.be.true;
+      assert.equal(deleteResponse.message, failureMessage);
+    });
+
+    it('should return a success response when a category is successfully deleted', async () => {
+      const successMessage = `Successfully deleted ${categoryName} category`;
+      sinon.stub(ProductCategory, 'destroy').resolves(1);
+
+      const deleteResponse = await sut.deleteCategory(
+        categoryId,
+        categoryName,
+      );
+
+      expect(deleteResponse.error).to.be.false;
+      assert.equal(deleteResponse.message, successMessage);
+    });
+  });
 });
