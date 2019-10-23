@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const ProductCategory = sequelize.define(
-    'ProductCategories',
+    'ProductCategory',
     {
       categoryName: DataTypes.STRING,
     },
@@ -11,8 +11,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  // ProductCategory.associate = function(models) {
-  //   // associations can be defined here
-  // }; // has many products association
+  // eslint-disable-next-line func-names
+  ProductCategory.associate = function(models) {
+    ProductCategory.hasMany(models.Product, { as: 'products' });
+  }; // has many products association
   return ProductCategory;
 };

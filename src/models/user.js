@@ -3,7 +3,7 @@ const error = require('../error');
 
 const userModel = (sequelize, DataTypes) => {
   const User = sequelize.define(
-    'user',
+    'User',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -35,6 +35,13 @@ const userModel = (sequelize, DataTypes) => {
       address: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
       },
     },
     {
