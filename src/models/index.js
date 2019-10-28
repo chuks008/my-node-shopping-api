@@ -9,9 +9,6 @@ const sequelize = new Sequelize.Sequelize(
   process.env.DATABASE_PASSWORD,
   {
     dialect: 'postgres',
-    define: {
-      freezeTableName: true,
-    },
   },
 );
 

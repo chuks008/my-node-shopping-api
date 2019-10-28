@@ -272,7 +272,7 @@ describe('User Account Service tests suite', () => {
       User.create.restore();
     });
 
-    it('should return general error when new user registration fails', async () => {
+    it('should return success response when user created successfully', async () => {
       const newUsername = 'constantinos910';
       const newEmail = 'constantinos910@mail.com';
 
@@ -282,6 +282,7 @@ describe('User Account Service tests suite', () => {
         newEmail,
         password,
         address,
+        role: 'user',
       };
 
       sinon.stub(User, 'findOne').resolves(null);
