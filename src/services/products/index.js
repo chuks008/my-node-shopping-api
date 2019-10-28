@@ -6,13 +6,13 @@ module.exports = Product => {
     /**
      * Add a new product
      *
-     * @param {*} productName - name of the new product
+     * @param {*} name - name of the new product
      * @param {*} categoryId - product category of the new product
      */
-    addProduct: async (productName, categoryId) => {
+    addProduct: async (name, categoryId) => {
       try {
         const existingProduct = await Product.findOne({
-          where: { productName },
+          where: { name },
         });
 
         if (existingProduct) {
@@ -22,14 +22,14 @@ module.exports = Product => {
         }
 
         const newProduct = await Product.create({
-          productName,
+          name,
           categoryId,
         });
 
         if (newProduct) {
           return {
             message: 'The product was added successfully',
-            product_name: newProduct.productName,
+            product_name: newProduct.name,
             category_id: newProduct.categoryId,
             error: false,
           };
@@ -88,7 +88,7 @@ module.exports = Product => {
         const productResult = products.map(product => {
           return {
             id: product.id,
-            product_name: product.productName,
+            product_name: product.name,
           };
         });
 
@@ -113,7 +113,7 @@ module.exports = Product => {
     updateProduct: async (productId, newProductName) => {
       try {
         const updatedProduct = await Product.update(
-          { productName: newProductName },
+          { name: newProductName },
           { where: { id: productId } },
         );
 

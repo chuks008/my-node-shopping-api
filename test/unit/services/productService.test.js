@@ -14,7 +14,7 @@ describe('Product tests', () => {
     const categoryId = 5;
     const product = {
       id: 1,
-      productName: 'toy',
+      name: 'toy',
       categoryId: 5,
     };
 

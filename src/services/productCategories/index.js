@@ -163,5 +163,44 @@ module.exports = ProductCategory => {
         };
       }
     },
+    /**
+     * Get all the products associated with a specific category id
+     *
+     * @param {*} categoryId
+     */
+    getProductsByCategoryId: async categoryId => {
+      try {
+        const category = await ProductCategory.findOne({
+          where: { id: categoryId },
+        });
+
+        if (!category) {
+          throw new Error('Category not found');
+        }
+
+        const products = await category.getProducts();
+
+        if (!products) {
+          throw new Error('No products found under this category');
+        }
+
+        const productResult = products.map(product => {
+          return {
+            product_name: product.name,
+          };
+        });
+
+        return {
+          message: `Success getting products for category ${category.categoryName}`,
+          count: products.length,
+          produts: productResult,
+        };
+      } catch (err) {
+        return {
+          message: err.message,
+          error: true,
+        };
+      }
+    },
   };
 };

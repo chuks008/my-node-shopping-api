@@ -13,7 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   );
   // eslint-disable-next-line func-names
   ProductCategory.associate = function(models) {
-    ProductCategory.hasMany(models.Product, { as: 'products' });
+    ProductCategory.hasMany(models.Product, {
+      as: 'Products',
+      foreignKey: 'categoryId',
+    });
   }; // has many products association
   return ProductCategory;
 };

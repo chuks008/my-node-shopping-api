@@ -193,4 +193,43 @@ describe('Product Category tests', () => {
       assert.equal(deleteResponse.message, successMessage);
     });
   });
+
+  // describe('Get products by category tests', () => {
+  //   // after(() => {
+  //   //   ProductCategory.findOne.restore();
+  //   // });
+
+  //   it('should return a list of products on success', async () => {
+  //     // const category = {
+  //     //   id: 1,
+  //     //   categoryName: 'Fruits',
+  //     // };
+
+  //     // const productList = [
+  //     //   {
+  //     //     name: 'Banana',
+  //     //     categoryId: 1,
+  //     //     createdAt: new Date(),
+  //     //     updatedAt: new Date(),
+  //     //   },
+  //     //   {
+  //     //     name: 'Plums',
+  //     //     categoryId: 1,
+  //     //     createdAt: new Date(),
+  //     //     updatedAt: new Date(),
+  //     //   },
+  //     // ];
+
+  //     // const successMessage = `Success getting products for category ${category.categoryName}`;
+
+  //     // sinon.stub(ProductCategory, 'findOne').resolves(productList);
+
+  //     // const productResponse = await sut.getProductsByCategoryId(3);
+
+  //     // expect(productResponse.error).to.be.false;
+  //     // assert.equal(productResponse.message, successMessage);
+
+  //     const productResponse = await sut.getProductsByCategoryId(3);
+  //   });
+  // });
 });

@@ -18,4 +18,8 @@ const models = {
   ProductCategory: sequelize.import('./product_category'),
 };
 
+Object.values(models)
+  .filter(model => typeof model.associate === 'function')
+  .forEach(model => model.associate(models));
+
 module.exports = { sequelize, models };
