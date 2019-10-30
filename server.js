@@ -4,7 +4,7 @@ const passport = require('passport');
 const morgan = require('morgan');
 
 const app = express();
-const userRoutes = require('./src/routes/user_data');
+const userRoutes = require('./src/routes/user');
 const testRoute = require('./src/routes');
 const { sequelize } = require('./src/models');
 const winston = require('./src/config/winston');
